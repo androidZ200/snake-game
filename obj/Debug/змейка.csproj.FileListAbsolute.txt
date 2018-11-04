@@ -1,0 +1,10 @@
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\bin\Debug\змейка.exe.config
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\bin\Debug\змейка.exe
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\bin\Debug\змейка.pdb
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.Form1.resources
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.Properties.Resources.resources
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.csproj.GenerateResource.Cache
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.csproj.CoreCompileInputs.cache
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.exe
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.pdb
+C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.csprojAssemblyReference.cache
