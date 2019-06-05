@@ -8,3 +8,13 @@ C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\зме�
 C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.exe
 C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.pdb
 C:\Users\Даниил\Documents\Visual Studio 2017\Projects\змейка\змейка\obj\Debug\змейка.csprojAssemblyReference.cache
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\bin\Debug\змейка.exe.config
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\bin\Debug\змейка.exe
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\bin\Debug\змейка.pdb
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\obj\Debug\змейка.csprojAssemblyReference.cache
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\obj\Debug\змейка.FormMain.resources
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\obj\Debug\змейка.Properties.Resources.resources
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\obj\Debug\змейка.csproj.GenerateResource.cache
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\obj\Debug\змейка.csproj.CoreCompileInputs.cache
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\obj\Debug\змейка.exe
+E:\YandexDisk\YandexDisk\Projects\змейка\змейка\obj\Debug\змейка.pdb
