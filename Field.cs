@@ -8,17 +8,22 @@ namespace змейка
     {
         private Random rand = new Random();
         public Snake<int> snake { get; set; }
-        private HashSet<int> wall;
-        private int eat;
+        public HashSet<int> wall { get; private set; }
+        public int eat { get; private set; }
         public int Width { get; private set; }
         public int WidthImage { get; private set; }
         public bool isLive { get; private set; } = true;
+
         private Bitmap image;
         private bool isChangeField = true;
         private object DrawingLock = new object();
-        public Color Background { get; set; } = Color.White;
-        public Color EatColor { get; set; } = Color.DarkRed;
-        public Color WallColor { get; set; } = Color.Black;
+
+        private Color _Background = Color.White;
+        private Color _EatColor = Color.DarkRed;
+        private Color _WallColor = Color.Black;
+        public Color Background { get { return _Background; } set { lock (DrawingLock) _Background = value; isChangeField = true; } }
+        public Color EatColor { get { return _EatColor; } set { lock (DrawingLock) _EatColor = value; isChangeField = true; } }
+        public Color WallColor { get { return _WallColor; } set { lock (DrawingLock) _WallColor = value; isChangeField = true; } }
 
         public event Action Eat;
         public event Action Die;
@@ -60,6 +65,9 @@ namespace змейка
                 (Snake<int>.Rotate)rand.Next(4), startLength, NextCell, GetRotate);
             wall.Clear();
             GenerateEat();
+            _Background = Color.White;
+            _EatColor = Color.DarkRed;
+            _WallColor = Color.Black;
             isLive = true;
             isChangeField = true;
         }
@@ -69,7 +77,7 @@ namespace змейка
         }
         public void AddWall()
         {
-            for(int i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 int t = rand.Next(Width * Width);
                 if (!snake.Body.Find(t, Comparison) && GetLength(t, snake.Body.Head) > 10 && t != eat)

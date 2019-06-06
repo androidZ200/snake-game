@@ -13,7 +13,7 @@ namespace змейка
         public static Func<int, Color> Rand()
         {
             Func<int, Color>[] skins = { FullBlack, FullGreen, GrassSnake, AgkistrodonContortrix, BlackRed, BlackYelloy,
-            BlackBlue, LampropeltisTriangulumElapsoides, GreenLines, GrayWaves};
+            BlackBlue, LampropeltisTriangulumElapsoides, GreenLines, GrayWaves, RadGradient};
             return skins[rand.Next(skins.Length)];
         }
 
@@ -66,6 +66,15 @@ namespace змейка
         {
             int t = -(int)(Math.Cos(index * 0.5) * 50 - 50);
             return Color.FromArgb(t, t, t);
+        }
+        public static Color RadGradient(int index)
+        {
+            if(index <= 8)
+            {
+                int t = (int)(Math.Cos(index * Math.PI / 16) * 100);
+                return Color.FromArgb(t, 0, 0);
+            }
+            return Color.Black;
         }
     }
 }

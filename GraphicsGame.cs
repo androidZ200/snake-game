@@ -15,8 +15,10 @@ namespace змейка
 
         public Bitmap output { get; private set; }
         private Bitmap ellipseImage;
+        private Rectangle SizeImage;
 
         private Thread mainThread;
+        private Thread JumpRectangle;
         private Thread moveField;
         private Thread speedupMoveThread;
         private Thread rotateField;
@@ -36,6 +38,7 @@ namespace змейка
         private object LockMove = new object();
         private object LockRotate = new object();
         private object LockDrawEllipse = new object();
+        private object LockDrawRectangle = new object();
 
         public event Action<Bitmap> outImage;
 
@@ -44,11 +47,13 @@ namespace змейка
             field = f;
             outImage = output;
             this.output = new Bitmap((int)(field.WidthImage * 1.4142f), (int)(field.WidthImage * 1.4142f));
+            SizeImage = new Rectangle((int)(field.WidthImage * 0.2071f), (int)(field.WidthImage * 0.2071f), field.WidthImage, field.WidthImage);
             DrawEllipse(Color.Gray);
         }
         ~GraphicsGame()
         {
             AbortThread(ref mainThread);
+            AbortThread(ref JumpRectangle);
             AbortThread(ref moveField);
             AbortThread(ref speedupMoveThread);
             AbortThread(ref rotateField);
@@ -76,6 +81,11 @@ namespace змейка
                 Graphics g = Graphics.FromImage(ellipseImage);
                 g.FillEllipse(new SolidBrush(r), 0, 0, output.Width, output.Height);
             }
+        }
+        public void Jump()
+        {
+            if (MoveImage || RotateImage)
+                StartTrhead(ref JumpRectangle, JumpRectangleImage);
         }
 
         public void StartMove()
@@ -171,7 +181,6 @@ namespace змейка
 
                 Thread.Sleep(delayed);
             }
-            waidSpeedMove();
         }
         private void speedupRotate(float newAngle, int delayed)
         {
@@ -187,17 +196,22 @@ namespace змейка
 
                 Thread.Sleep(delayed);
             }
-            waitSpeedRotate();
         }
         private void waidSpeedMove()
         {
-            Thread.Sleep(rand.Next(1000, 6000));
-            speedupMove(new PointF(Rand(MaxSpeedField), Rand(MaxSpeedField)), rand.Next(300, 600));
+            while (MoveImage)
+            {
+                Thread.Sleep(rand.Next(1000, 6000));
+                speedupMove(new PointF(Rand(MaxSpeedField), Rand(MaxSpeedField)), rand.Next(300, 600));
+            }
         }
         private void waitSpeedRotate()
         {
-            Thread.Sleep(rand.Next(1000, 6000));
-            speedupRotate(Rand(MaxSpeedRotate), rand.Next(250, 500));
+            while (RotateImage)
+            {
+                Thread.Sleep(rand.Next(1000, 6000));
+                speedupRotate(Rand(MaxSpeedRotate), rand.Next(250, 500));
+            }
         }
 
         private void Drawing()
@@ -230,7 +244,8 @@ namespace змейка
                 s.DrawImage(copy, p.X - field.WidthImage, p.Y - field.WidthImage);
             }
 
-            g.DrawImage(MoveingImage, t.Width * 0.146f, t.Height * 0.146f);
+            lock (LockDrawRectangle)
+                g.DrawImage(MoveingImage, SizeImage);
             lock (LockRotate)
                 output = rotateImage(t, angle);
         }
@@ -247,6 +262,24 @@ namespace змейка
         private float Rand(float lim)
         {
             return (float)rand.NextDouble() * lim * 2 - lim;
+        }
+        private void JumpRectangleImage()
+        {
+            Rectangle copy = SizeImage;
+            for (int i = 0; i <= 50; i++)
+            {
+                int x = (int)(Math.Sin(i * Math.PI / 50) * 50);
+                lock (LockDrawRectangle)
+                {
+                    SizeImage.X = copy.X - x;
+                    SizeImage.Y = copy.Y - x;
+                    SizeImage.Width = copy.Width + 2 * x;
+                    SizeImage.Height = copy.Height + 2 * x;
+                }
+                Thread.Sleep(10);
+            }
+            SizeImage = copy;
+            AbortThread(ref JumpRectangle);
         }
 
         private void StartTrhead(ref Thread t, ThreadStart func)

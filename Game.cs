@@ -13,17 +13,18 @@ namespace змейка
         public enum Rotate { Left, Up, Right };
 
         private Field field;
-        Random rand = new Random();
+        private Random rand = new Random();
         private Thread gameThread;
         private object AddMoveLook = new object();
         private int Delayed = 0;
-        private int DelayedMove = 500;
-        public bool Play { get; private set; } = false;
-        public int SnakeLength { get { return field.snake.Length; } }
         private bool ReverseRotate = false;
         private Queue<Rotate> historyMoves = new Queue<Rotate>();
         private GraphicsGame graphics;
         private int StartLength;
+
+        public bool Play { get; private set; } = false;
+        public int SnakeLength { get { return field.snake.Length; } }
+        public int CountMoves { get; private set; } = 0;
 
         public event Action<int> Death;
         public event Action<Bitmap> Graphics;
@@ -67,12 +68,12 @@ namespace змейка
         public void Reset()
         {
             Stop();
-            field.Restart(StartLength);
-            field.NewSnakeSkin(SkinsSnake.Rand());
             graphics.StopRotate();
             graphics.StopMove();
+            field.Restart(StartLength);
+            field.NewSnakeSkin(SkinsSnake.Rand());
             Delayed = 0;
-            DelayedMove = 500;
+            CountMoves = 0;
             historyMoves.Clear();
             ChangeLength(SnakeLength);
         }
@@ -96,49 +97,41 @@ namespace змейка
         {
             while (Play)
             {
-                Rotate t;
-                lock (AddMoveLook)
-                {
-                    while (historyMoves.Count <= Delayed) RotateMovePriv(Rotate.Up);
-                    t = historyMoves.Dequeue();
-                }
-                switch (t)
-                {
-                    case Rotate.Left:
-                        field.snake.ChangeAngle(false);
-                        break;
-                    case Rotate.Right:
-                        field.snake.ChangeAngle(true);
-                        break;
-                }
+                SnakeRotate();
                 field.Move();
+                CountMoves++;
                 graphics.ChangeImage();
                 GC.Collect();
                 if (field.isLive)
                 {
                     CheckLength(field.snake.Length);
-                    Thread.Sleep(DelayedMove);
+                    DalayedMove(field.snake.Length);
                 }
+            }
+        }
+        private void SnakeRotate()
+        {
+            Rotate t;
+            lock (AddMoveLook)
+            {
+                while (historyMoves.Count <= Delayed) RotateMovePriv(Rotate.Up);
+                t = historyMoves.Dequeue();
+            }
+            switch (t)
+            {
+                case Rotate.Left:
+                    field.snake.ChangeAngle(false);
+                    break;
+                case Rotate.Right:
+                    field.snake.ChangeAngle(true);
+                    break;
             }
         }
         private void CheckLength(int length)
         {
             switch (length)
             {
-                case 8:
-                    DelayedMove = 450;
-                    break;
-                case 14:
-                    DelayedMove = 400;
-                    break;
-                case 20:
-                    DelayedMove = 320;
-                    break;
-                case 30:
-                    DelayedMove = 250;
-                    break;
                 case 40:
-                    DelayedMove = 160;
                     Delayed = 1;
                     break;
                 case 60:
@@ -160,6 +153,12 @@ namespace змейка
             if (length >= 20 && !graphics.RotateImage)
                 graphics.StartRotate();
 
+            if (length >= 80 && rand.Next(700) == 0)
+            {
+                historyMoves.Clear();
+                field.ReverseAndMove();
+            }
+
             if (length >= 100)
             {
                 if ((length / 10) % 2 == 0)
@@ -176,7 +175,29 @@ namespace змейка
                     graphics.DrawEllipse(Color.Gray);
                 }
             }
-            
+
+            if (length >= 50 && rand.Next(500) == 0)
+            {
+                Color t = field.WallColor;
+                field.WallColor = field.EatColor;
+                field.EatColor = t;
+            }
+
+            if (length >= 40 && rand.Next(200) == 0)
+            {
+                Color[] clr = { Color.White, Color.Yellow, Color.Cyan, Color.Violet };
+                field.Background = clr[rand.Next(clr.Length)];
+            }
+
+        }
+        private void DalayedMove(int length)
+        {
+            if (length >= 40) Thread.Sleep(160);
+            else if (length >= 30) Thread.Sleep(230);
+            else if (length >= 20) Thread.Sleep(300);
+            else if (length >= 14) Thread.Sleep(360);
+            else if (length >= 8) Thread.Sleep(400);
+            else Thread.Sleep(450);
         }
         private void RotateMovePriv(Rotate move)
         {
@@ -190,6 +211,8 @@ namespace змейка
         }
         private void Eat()
         {
+            if (SnakeLength >= 30)
+                graphics.Jump();
             ChangeLength(field.snake.Length);
         }
     }
